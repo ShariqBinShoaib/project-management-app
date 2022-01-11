@@ -6,5 +6,10 @@ export class RoleRepository extends Repository<Role> {
   async createRole(role: RoleDTO) {
     const newRole = new Role(role);
     await newRole.save();
+    return newRole;
+  }
+
+  async deleteRole(id: string) {
+    await this.delete(id);
   }
 }
