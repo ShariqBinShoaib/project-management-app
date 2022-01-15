@@ -20,4 +20,8 @@ export class User extends Model<User> {
 
   @ManyToOne(() => Role)
   role: string;
+
+  toJSON() {
+    return { ...this, password: undefined };
+  }
 }

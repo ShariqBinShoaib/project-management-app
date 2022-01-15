@@ -9,15 +9,26 @@ export class RoleController {
     this.roleService = roleService;
   }
 
-  async createRole(req: Request, res: Response) {
+  createRole = async (req: Request, res: Response) => {
     const data: RoleDTO = <RoleDTO>req.body;
     const newRole = await this.roleService.createRole(data);
     return res.status(200).json(newRole);
-  }
+  };
 
-  async deleteRole(req: Request, res: Response) {
+  deleteRole = async (req: Request, res: Response) => {
     const id: string = req.params.id;
     const deletedRole = await this.roleService.deleteRole(id);
     return res.status(200).json(deletedRole);
-  }
+  };
+
+  getRoles = async (_: Request, res: Response) => {
+    const roles = await this.roleService.getRoles();
+    return res.status(200).json(roles);
+  };
+
+  getRoleById = async (req: Request, res: Response) => {
+    const id: string = req.params.id;
+    const role = await this.roleService.getRoleById(id);
+    return res.status(200).json(role);
+  };
 }

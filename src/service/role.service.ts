@@ -1,8 +1,12 @@
-import { RoleDTO } from "src/dto/role.dto";
-import { RoleRepository } from "src/repository/role.repository";
+import { RoleDTO } from "../dto/role.dto";
+import { RoleRepository } from "../repository/role.repository";
 
 export class RoleService {
-  constructor(private roleRepository: RoleRepository) {}
+  private roleRepository;
+
+  constructor(roleRepository: RoleRepository) {
+    this.roleRepository = roleRepository;
+  }
 
   async createRole(role: RoleDTO) {
     const newRole = await this.roleRepository.createRole(role);
@@ -10,6 +14,14 @@ export class RoleService {
   }
 
   async deleteRole(id: string) {
-    this.roleRepository.delete(id);
+    return await this.roleRepository.delete(id);
+  }
+
+  getRoles = async () => {
+    return await this.roleRepository.find();
+  };
+
+  async getRoleById(id: string) {
+    return this.roleRepository.findOne(id);
   }
 }

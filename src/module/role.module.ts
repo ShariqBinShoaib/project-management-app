@@ -1,16 +1,27 @@
 import express from "express";
-import { RoleRepository } from "src/repository/role.repository";
-import { RoleService } from "src/service/role.service";
-import { RoleController } from "src/controller/role.controller";
-import asyncMiddleware from "src/middleware/async";
+import { getCustomRepository } from "typeorm";
+import { RoleRepository } from "../repository/role.repository";
+import { RoleService } from "../service/role.service";
+import { RoleController } from "../controller/role.controller";
+import { RoleDTO } from "../dto/role.dto";
+import { validateReqBody } from "../middleware/validation";
+import asyncMiddleware from "../middleware/async";
 
-const router = express.Router();
+export function registerRoleModule() {
+  const router = express.Router();
 
-const roleRepository = new RoleRepository();
-const roleService = new RoleService(roleRepository);
-const roleController = new RoleController(roleService);
+  const roleRepository = getCustomRepository(RoleRepository);
+  const roleService = new RoleService(roleRepository);
+  const roleController = new RoleController(roleService);
 
-router.get("/", asyncMiddleware(roleController.createRole));
-router.delete("/", asyncMiddleware(roleController.deleteRole));
+  router.get("/", asyncMiddleware(roleController.getRoles));
+  router.get("/:id", asyncMiddleware(roleController.getRoleById));
+  router.post(
+    "/",
+    validateReqBody(RoleDTO),
+    asyncMiddleware(roleController.createRole)
+  );
+  router.delete("/:id", asyncMiddleware(roleController.deleteRole));
 
-export default router;
+  return router;
+}

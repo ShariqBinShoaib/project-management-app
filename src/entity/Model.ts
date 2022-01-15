@@ -16,19 +16,11 @@ abstract class Model<T> extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  @Generated("uuid")
-  uuid: string;
-
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  toJSON() {
-    return { ...this, id: undefined, password: undefined };
-  }
 }
 
 export default Model;

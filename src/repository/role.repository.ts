@@ -1,7 +1,8 @@
-import { Role } from "src/entity/Role";
-import { Repository } from "typeorm";
-import { RoleDTO } from "src/dto/role.dto";
+import { Role } from "../entity/Role";
+import { EntityRepository, Repository } from "typeorm";
+import { RoleDTO } from "../dto/role.dto";
 
+@EntityRepository(Role)
 export class RoleRepository extends Repository<Role> {
   async createRole(role: RoleDTO) {
     const newRole = new Role(role);
