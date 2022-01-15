@@ -1,5 +1,10 @@
 export type ErrorObject = {
-  [key: string]: string[];
+  [key: string]: string | number;
+};
+
+export type SerializedErrors = {
+  code: number;
+  messages: ErrorObject;
 };
 
 export abstract class BaseError extends Error {
@@ -8,5 +13,5 @@ export abstract class BaseError extends Error {
     super(message);
     Object.setPrototypeOf(this, new.target.prototype);
   }
-  abstract serializeErrors(): ErrorObject;
+  abstract serializeErrors(): SerializedErrors;
 }

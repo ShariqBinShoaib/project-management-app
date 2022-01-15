@@ -1,10 +1,11 @@
 import { ClassConstructor, plainToClass } from "class-transformer";
-import { validate } from "class-validator";
-import { BadRequestError } from "src/errors/BadRequestError";
+import { validate, ValidationError } from "class-validator";
+import { ErrorObject } from "src/errors/BaseError";
+import { BadRequestError } from "../errors/BadRequestError";
 
 /**
  *
- * Validate the payload will be sending or receiving, make sure the data is suitable
+ * Validate the received payload, make sure the data is suitable
  *
  * @param dto The DTO object to validate
  * @param obj The object recieved from request body
@@ -25,6 +26,16 @@ export const dtoValidator = async <T extends ClassConstructor<any>>(
   const errors = await validate(objInstance);
   // errors is an array of validation errors
   if (errors.length > 0) {
-    throw new BadRequestError(errors);
+    const formattedErrors = errors.reduce(
+      (acc: ErrorObject, val: ValidationError) => {
+        if (val.constraints !== undefined) {
+          if (Object.values(val.constraints).length > 0)
+            acc[val.property] = Object.values(val.constraints)[0];
+        }
+        return acc;
+      },
+      {}
+    );
+    throw new BadRequestError(formattedErrors);
   }
 };
