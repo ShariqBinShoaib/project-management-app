@@ -1,3 +1,4 @@
+import { Role } from "src/entity/Role";
 import { RoleDTO } from "../dto/role.dto";
 import { RoleRepository } from "../repository/role.repository";
 
@@ -13,15 +14,19 @@ export class RoleService {
     return newRole;
   }
 
-  async deleteRole(id: string) {
-    return await this.roleRepository.delete(id);
+  deleteRole(id: string) {
+    return this.roleRepository.delete(id);
   }
 
-  getRoles = async () => {
-    return await this.roleRepository.find();
-  };
+  getRoles() {
+    return this.roleRepository.find();
+  }
 
-  async getRoleById(id: string) {
+  getRoleById(id: string) {
     return this.roleRepository.findOne(id);
+  }
+
+  getRoleByName(name: string) {
+    return this.roleRepository.findOne({ name });
   }
 }

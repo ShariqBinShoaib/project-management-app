@@ -10,7 +10,7 @@ export class RoleController {
   }
 
   createRole = async (req: Request, res: Response) => {
-    const data: RoleDTO = <RoleDTO>req.body;
+    const data: RoleDTO = req.body as RoleDTO;
     const newRole = await this.roleService.createRole(data);
     return res.status(200).json(newRole);
   };
