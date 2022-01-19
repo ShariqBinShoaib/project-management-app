@@ -7,6 +7,7 @@ export function error(
   res: Response,
   next: NextFunction
 ) {
+  console.log(err);
   if (err instanceof BaseError) {
     return res.status(err.statusCode).json(err.serializeErrors());
   }

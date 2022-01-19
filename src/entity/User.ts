@@ -11,7 +11,7 @@ export class User extends Model<User> {
 
   @Length(6, 255)
   @IsEmail()
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Length(8, 255)
@@ -19,7 +19,7 @@ export class User extends Model<User> {
   password: string;
 
   @ManyToOne(() => Role)
-  role: string;
+  role: Role;
 
   toJSON() {
     return { ...this, password: undefined };
