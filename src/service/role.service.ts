@@ -1,4 +1,3 @@
-import { Role } from "src/entity/Role";
 import { RoleDTO } from "../dto/role.dto";
 import { RoleRepository } from "../repository/role.repository";
 
@@ -19,7 +18,7 @@ export class RoleService {
   }
 
   getRoles() {
-    return this.roleRepository.find();
+    return this.roleRepository.getAll();
   }
 
   getRoleById(id: string) {
