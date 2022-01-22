@@ -1,4 +1,4 @@
-import { ClassConstructor, plainToClass } from "class-transformer";
+import { ClassConstructor, plainToInstance } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
 import { ErrorObject } from "src/errors/BaseError";
 import { BadRequestError } from "../errors/BadRequestError";
@@ -9,6 +9,7 @@ import { BadRequestError } from "../errors/BadRequestError";
  *
  * @param dto The DTO object to validate
  * @param obj The object recieved from request body
+ * @returns {ClassConstructor<any>} object converted to class instance
  *
  * @example
  * ```ts
@@ -19,9 +20,11 @@ import { BadRequestError } from "../errors/BadRequestError";
 export const dtoValidator = async <T extends ClassConstructor<any>>(
   dto: T,
   obj: Object
-) => {
+): Promise<T> => {
   // tranform the literal object to class object
-  const objInstance = plainToClass(dto, obj);
+  const objInstance: T = plainToInstance(dto, obj, {
+    excludeExtraneousValues: true,
+  });
   // validating and check the errors, throw the errors if exist
   const errors = await validate(objInstance);
   // errors is an array of validation errors
@@ -29,8 +32,8 @@ export const dtoValidator = async <T extends ClassConstructor<any>>(
     const formattedErrors = errors.reduce(
       (acc: ErrorObject, val: ValidationError) => {
         if (val.constraints !== undefined) {
-          if (Object.values(val.constraints).length > 0)
-            acc[val.property] = Object.values(val.constraints)[0];
+          const errorValues = Object.values(val.constraints);
+          if (errorValues.length > 0) acc[val.property] = errorValues[0];
         }
         return acc;
       },
@@ -38,4 +41,5 @@ export const dtoValidator = async <T extends ClassConstructor<any>>(
     );
     throw new BadRequestError(formattedErrors);
   }
+  return objInstance;
 };

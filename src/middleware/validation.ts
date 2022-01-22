@@ -5,7 +5,8 @@ import { dtoValidator } from "../utils/dtoValidator";
 export function validateReqBody(dto: ClassConstructor<any>) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      await dtoValidator(dto, req.body);
+      const objInstance = await dtoValidator(dto, req.body);
+      req.body = objInstance;
       next();
     } catch (error) {
       next(error);
