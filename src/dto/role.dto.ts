@@ -1,4 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString, Length } from "class-validator";
+import { Expose } from "class-transformer";
 
 export enum ValidRoles {
   ADMIN = "admin",
@@ -7,6 +8,7 @@ export enum ValidRoles {
 }
 
 export class RoleDTO {
+  @Expose()
   @IsString()
   @IsNotEmpty()
   @Length(3, 10)

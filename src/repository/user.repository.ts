@@ -11,12 +11,27 @@ export class UserRepository extends BaseRepository<User> {
 
     try {
       await newUser.save();
-      const savedUser = await this.findOne(newUser.id);
-      return savedUser;
+      return newUser;
     } catch (error) {
       if (error.code === "23505") {
         throw new BadRequestError({
-          name: "User with this name already exist",
+          email: "User with this email already exist",
+        });
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  async updateUser(id: string, user: UserDTO) {
+    try {
+      await this.update(id, user);
+      const updatedUser = await this.findOne(id);
+      return updatedUser;
+    } catch (error) {
+      if (error.code === "23505") {
+        throw new BadRequestError({
+          email: "User with this email already exist",
         });
       } else {
         throw error;

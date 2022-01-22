@@ -1,5 +1,5 @@
 import { IsEmail, Length } from "class-validator";
-import { Entity, Column, ManyToOne } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 import Model from "./Model";
 import { Role } from "./Role";
 
@@ -19,7 +19,11 @@ export class User extends Model<User> {
   password: string;
 
   @ManyToOne(() => Role)
+  @JoinColumn({ name: "roleId" })
   role: Role;
+
+  @Column()
+  roleId: number;
 
   toJSON() {
     return { ...this, password: undefined };

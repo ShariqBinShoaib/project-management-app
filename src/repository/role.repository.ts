@@ -11,8 +11,7 @@ export class RoleRepository extends BaseRepository<Role> {
 
     try {
       await newRole.save();
-      const savedRole = await this.findOne(newRole.id);
-      return savedRole;
+      return newRole;
     } catch (error) {
       if (error.code === "23505") {
         throw new BadRequestError({
