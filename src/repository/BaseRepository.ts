@@ -1,10 +1,10 @@
 import { Repository } from "typeorm";
 
-export class BaseRepository<Entity> extends Repository<Entity> {
-  async getAll(limit?: number, offset?: number) {
-    type FetchedData = { data: Entity[]; count: number };
+type FetchedData<T> = { data: T[]; count: number };
 
-    const fetchedData: FetchedData = {
+export class BaseRepository<Entity> extends Repository<Entity> {
+  async getAll(limit?: number, offset?: number): Promise<FetchedData<Entity>> {
+    const fetchedData: FetchedData<Entity> = {
       data: [],
       count: 0,
     };

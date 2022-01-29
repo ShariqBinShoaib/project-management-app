@@ -1,3 +1,4 @@
+import { genSalt, hash } from "bcrypt";
 import { UserDTO } from "../dto/user.dto";
 import { UserRepository } from "../repository/user.repository";
 
@@ -9,7 +10,11 @@ export class UserService {
   }
 
   async createUser(user: UserDTO) {
-    const newUser = await this.userRepository.createUser(user);
+    const clonedUser: UserDTO = user;
+    const salt = await genSalt();
+    clonedUser.password = await this.hashPassword(user.password, salt);
+
+    const newUser = await this.userRepository.createUser(clonedUser);
     return newUser;
   }
 
@@ -31,5 +36,9 @@ export class UserService {
 
   getUserByName(name: string) {
     return this.userRepository.findOne({ name });
+  }
+
+  private async hashPassword(password: string, salt: string): Promise<string> {
+    return hash(password, salt);
   }
 }
