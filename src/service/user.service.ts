@@ -10,7 +10,7 @@ export class UserService {
   }
 
   async createUser(user: UserDTO) {
-    const clonedUser: UserDTO = user;
+    const clonedUser: UserDTO = { ...user };
     const salt = await genSalt();
     clonedUser.password = await this.hashPassword(user.password, salt);
 

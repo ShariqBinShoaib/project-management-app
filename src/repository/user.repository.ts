@@ -1,4 +1,4 @@
-import { EntityRepository } from "typeorm";
+import { EntityRepository, In } from "typeorm";
 import { User } from "../entity/User";
 import { UserDTO } from "../dto/user.dto";
 import { BadRequestError } from "../errors/BadRequestError";
@@ -37,5 +37,11 @@ export class UserRepository extends BaseRepository<User> {
         throw error;
       }
     }
+  }
+
+  getUsersByIds(ids: number[]) {
+    return this.find({
+      where: { id: In(ids) },
+    });
   }
 }
