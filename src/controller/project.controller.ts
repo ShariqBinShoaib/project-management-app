@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ProjectDTO } from "src/dto/project.dto";
-import { UserIdsDTO } from "src/dto/user-ids.dto";
+import { UserIdsDTO } from "src/dto/user.dto";
 import { ProjectService } from "src/service/project.service";
 
 export class ProjectController {
