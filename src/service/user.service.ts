@@ -31,7 +31,7 @@ export class UserService {
   }
 
   getUserById(id: string) {
-    return this.userRepository.findOne(id, { relations: ["role"] });
+    return this.userRepository.findOne(id, { relations: ["role", "projects"] });
   }
 
   getUserByName(name: string) {

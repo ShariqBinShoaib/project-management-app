@@ -5,9 +5,9 @@ import { UserRepository } from "../repository/user.repository";
 import { ProjectService } from "../service/project.service";
 import { ProjectController } from "../controller/project.controller";
 import { ProjectDTO } from "../dto/project.dto";
+import { UserIdsDTO } from "../dto/user.dto";
 import { validateReqBody } from "../middleware/validation";
 import asyncMiddleware from "../middleware/async";
-import { UserIdsDTO } from "../dto/user-ids.dto";
 
 export function registerProjectModule() {
   const router = express.Router();

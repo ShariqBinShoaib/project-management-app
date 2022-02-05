@@ -5,6 +5,8 @@ import {
   Length,
   Matches,
   MaxLength,
+  ArrayMinSize,
+  IsArray,
 } from "class-validator";
 import { Expose } from "class-transformer";
 
@@ -25,7 +27,7 @@ export class UserDTO {
   @Expose()
   @IsString()
   @IsNotEmpty()
-  @Length(3, 255)
+  @Length(6, 255)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message:
       "Password is too weak, it must be comprised of atleast 1 uppercase, 1 lowercase, 1 special character and 1 digit",
@@ -35,4 +37,11 @@ export class UserDTO {
   @Expose()
   @IsNotEmpty()
   roleId: number;
+}
+
+export class UserIdsDTO {
+  @Expose()
+  @IsArray()
+  @ArrayMinSize(1)
+  userIds: number[];
 }
