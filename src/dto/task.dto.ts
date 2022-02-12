@@ -30,5 +30,9 @@ export class TaskDTO {
 
   @Expose()
   @IsNotEmpty()
-  userId: number;
+  reporterId: number;
+
+  @Expose()
+  @IsNotEmpty()
+  assigneeId: number;
 }

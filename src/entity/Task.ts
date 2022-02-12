@@ -15,7 +15,7 @@ export class Task extends Model<Task> {
   @Column()
   statusId: number;
 
-  @ManyToOne(() => Status)
+  @ManyToOne(() => Status, { eager: true })
   @JoinColumn({ name: "statusId" })
   status: Status;
 
@@ -27,9 +27,16 @@ export class Task extends Model<Task> {
   project: Project;
 
   @Column()
-  userId: number;
+  reporterId: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: "userId" })
-  user: User;
+  @ManyToOne(() => User, { eager: true })
+  @JoinColumn({ name: "reporterId" })
+  reporter: User;
+
+  @Column()
+  assigneeId: number;
+
+  @ManyToOne(() => User, { eager: true })
+  @JoinColumn({ name: "assigneeId" })
+  assignee: User;
 }
