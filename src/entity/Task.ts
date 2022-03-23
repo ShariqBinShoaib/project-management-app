@@ -1,4 +1,5 @@
-import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Comment } from "./Comment";
 import Model from "./Model";
 import { Project } from "./Project";
 import { Status } from "./Status";
@@ -39,4 +40,7 @@ export class Task extends Model<Task> {
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: "assigneeId" })
   assignee: User;
+
+  @OneToMany(() => Comment, (comment) => comment.task)
+  comments: Comment[];
 }

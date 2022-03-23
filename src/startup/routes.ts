@@ -6,6 +6,7 @@ import { registerUserModule } from "../module/user.module";
 import { registerProjectModule } from "../module/project.module";
 import { registerStatusModule } from "../module/status.module";
 import { registerTaskModule } from "../module/task.module";
+import { registerCommentModule } from "../module/comment.module";
 
 export function inititalizeRoutes(app: Application) {
   const role: Router = registerRoleModule();
@@ -13,6 +14,7 @@ export function inititalizeRoutes(app: Application) {
   const project: Router = registerProjectModule();
   const status: Router = registerStatusModule();
   const task: Router = registerTaskModule();
+  const comment: Router = registerCommentModule();
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -21,5 +23,6 @@ export function inititalizeRoutes(app: Application) {
   app.use("/api/projects", project);
   app.use("/api/statuses", status);
   app.use("/api/tasks", task);
+  app.use("/api/comments", comment);
   app.use(error);
 }
