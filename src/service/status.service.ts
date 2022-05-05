@@ -10,9 +10,10 @@ export class StatusService {
   }
 
   async createStatus(status: StatusDTO) {
-    let defaultStatus: Status | undefined;
+    let defaultStatus: Status | null | undefined;
+
     if (status.isDefault) {
-      defaultStatus = await this.statusRepository.findOne({ isDefault: true });
+      defaultStatus = await this.statusRepository.findOneBy({ isDefault: true });
     }
     const newStatus = await this.statusRepository.createStatus(status);
 
@@ -23,15 +24,15 @@ export class StatusService {
     return newStatus;
   }
 
-  deleteStatus(id: string) {
+  deleteStatus(id: number) {
     return this.statusRepository.delete(id);
   }
 
   getStatuses() {
-    return this.statusRepository.getAll();
+    return this.statusRepository.getStatuses();
   }
 
-  getStatusById(id: string) {
-    return this.statusRepository.findOne(id);
+  getStatusById(id: number) {
+    return this.statusRepository.findOneBy({ id });
   }
 }

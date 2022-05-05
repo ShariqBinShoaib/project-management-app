@@ -18,24 +18,27 @@ export class UserService {
     return newUser;
   }
 
-  updateUser(id: string, user: UserDTO) {
+  updateUser(id: number, user: UserDTO) {
     return this.userRepository.updateUser(id, user);
   }
 
-  deleteUser(id: string) {
+  deleteUser(id: number) {
     return this.userRepository.delete(id);
   }
 
   getUsers() {
-    return this.userRepository.getAll();
+    return this.userRepository.getUsers();
   }
 
-  getUserById(id: string) {
-    return this.userRepository.findOne(id, { relations: ["role", "projects"] });
+  getUserById(id: number) {
+    return this.userRepository.findOne({
+      where: { id },
+      relations: { role: true, projects: true },
+    });
   }
 
   getUserByName(name: string) {
-    return this.userRepository.findOne({ name });
+    return this.userRepository.findOneBy({ name });
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {

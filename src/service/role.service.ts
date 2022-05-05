@@ -18,14 +18,14 @@ export class RoleService {
   }
 
   getRoles() {
-    return this.roleRepository.getAll();
+    return this.roleRepository.getRoles();
   }
 
-  getRoleById(id: string) {
-    return this.roleRepository.findOne(id);
+  getRoleById(id: number) {
+    return this.roleRepository.findOneBy({ id });
   }
 
   getRoleByName(name: string) {
-    return this.roleRepository.findOne({ name });
+    return this.roleRepository.findOneBy({ name });
   }
 }

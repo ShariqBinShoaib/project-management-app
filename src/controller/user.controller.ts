@@ -17,13 +17,13 @@ export class UserController {
 
   updateUser = async (req: Request, res: Response) => {
     const data: UserDTO = req.body;
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const updatedUser = await this.userService.updateUser(id, data);
     return res.status(200).json(updatedUser);
   };
 
   deleteUser = async (req: Request, res: Response) => {
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const deletedUser = await this.userService.deleteUser(id);
     return res.status(200).json(deletedUser);
   };
@@ -34,7 +34,7 @@ export class UserController {
   };
 
   getUserById = async (req: Request, res: Response) => {
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const user = await this.userService.getUserById(id);
     return res.status(200).json(user);
   };

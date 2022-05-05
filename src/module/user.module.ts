@@ -1,6 +1,5 @@
 import express from "express";
-import { getCustomRepository } from "typeorm";
-import { UserRepository } from "../repository/user.repository";
+import { userRepository } from "../repository/user.repository";
 import { UserService } from "../service/user.service";
 import { UserController } from "../controller/user.controller";
 import { UserDTO } from "../dto/user.dto";
@@ -10,23 +9,14 @@ import asyncMiddleware from "../middleware/async";
 export function registerUserModule() {
   const router = express.Router();
 
-  const userRepository = getCustomRepository(UserRepository);
   const userService = new UserService(userRepository);
   const userController = new UserController(userService);
 
   router.get("/", asyncMiddleware(userController.getUsers));
   router.get("/:id", asyncMiddleware(userController.getUserById));
   router.delete("/:id", asyncMiddleware(userController.deleteUser));
-  router.post(
-    "/",
-    validateReqBody(UserDTO),
-    asyncMiddleware(userController.createUser)
-  );
-  router.put(
-    "/:id",
-    validateReqBody(UserDTO),
-    asyncMiddleware(userController.updateUser)
-  );
+  router.post("/", validateReqBody(UserDTO), asyncMiddleware(userController.createUser));
+  router.put("/:id", validateReqBody(UserDTO), asyncMiddleware(userController.updateUser));
 
   return router;
 }

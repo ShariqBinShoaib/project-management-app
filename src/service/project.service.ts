@@ -6,10 +6,7 @@ export class ProjectService {
   private projectRepository;
   private userRepository;
 
-  constructor(
-    projectRepository: ProjectRepository,
-    userRepository: UserRepository
-  ) {
+  constructor(projectRepository: ProjectRepository, userRepository: UserRepository) {
     this.projectRepository = projectRepository;
     this.userRepository = userRepository;
   }
@@ -22,24 +19,27 @@ export class ProjectService {
     return newProject;
   }
 
-  async addUsersToProject(projectId: string, userIds: number[]) {
+  async addUsersToProject(projectId: number, userIds: number[]) {
     const users = await this.userRepository.getUsersByIds(userIds);
     return this.projectRepository.addUsersToProject(projectId, users);
   }
 
-  deleteProject(id: string) {
+  deleteProject(id: number) {
     return this.projectRepository.delete(id);
   }
 
   getProjects() {
-    return this.projectRepository.getAll();
+    return this.projectRepository.getProjects();
   }
 
-  getProjectById(id: string) {
-    return this.projectRepository.findOne(id, { relations: ["users"] });
+  getProjectById(id: number) {
+    return this.projectRepository.findOne({
+      where: { id },
+      relations: { users: true },
+    });
   }
 
   getProjectByName(name: string) {
-    return this.projectRepository.findOne({ name });
+    return this.projectRepository.findOneBy({ name });
   }
 }

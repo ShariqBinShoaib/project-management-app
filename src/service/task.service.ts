@@ -4,7 +4,7 @@ import { RoleRepository } from "../repository/role.repository";
 import { UserRepository } from "../repository/user.repository";
 import { BadRequestError } from "../errors/BadRequestError";
 import { NotFoundError } from "../errors/NotFoundError";
-import { StatusRepository } from "src/repository/status.repository";
+import { StatusRepository } from "../repository/status.repository";
 
 export class TaskService {
   constructor(
@@ -15,11 +15,8 @@ export class TaskService {
   ) {}
 
   async createTask(task: TaskDTO) {
-    const roleIds = await this.roleRepository.getRoleIdsByNames([
-      "admin",
-      "reporter",
-    ]);
-    const user = await this.userRepository.findOne(task.reporterId);
+    const roleIds = await this.roleRepository.getRoleIdsByNames(["admin", "reporter"]);
+    const user = await this.userRepository.findOneBy({ id: task.reporterId });
     if (!user) throw new NotFoundError({ detail: "User not found!" });
     if (!roleIds.includes(user.id)) {
       throw new BadRequestError({
@@ -27,7 +24,7 @@ export class TaskService {
       });
     }
     if (!task.statusId) {
-      const defaultStatus = await this.statusRepository.findOne({
+      const defaultStatus = await this.statusRepository.findOneBy({
         isDefault: true,
       });
       if (defaultStatus) task.statusId = defaultStatus?.id;
@@ -36,15 +33,15 @@ export class TaskService {
     return newTask;
   }
 
-  deleteTask(id: string) {
+  deleteTask(id: number) {
     return this.taskRepository.delete(id);
   }
 
   getTasks() {
-    return this.taskRepository.getAll();
+    return this.taskRepository.getTasks();
   }
 
-  getTaskById(id: string) {
-    return this.taskRepository.findOne(id);
+  getTaskById(id: number) {
+    return this.taskRepository.findOneBy({ id });
   }
 }

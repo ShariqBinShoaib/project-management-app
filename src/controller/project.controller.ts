@@ -17,17 +17,14 @@ export class ProjectController {
   };
 
   addUsersToProject = async (req: Request, res: Response) => {
-    const projectId: string = req.params.id;
+    const projectId: number = Number(req.params.id);
     const reqBody: UserIdsDTO = req.body;
-    const updatedProject = await this.projectService.addUsersToProject(
-      projectId,
-      reqBody.userIds
-    );
+    const updatedProject = await this.projectService.addUsersToProject(projectId, reqBody.userIds);
     return res.status(200).json(updatedProject);
   };
 
   deleteProject = async (req: Request, res: Response) => {
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const deletedProject = await this.projectService.deleteProject(id);
     return res.status(200).json(deletedProject);
   };
@@ -38,7 +35,7 @@ export class ProjectController {
   };
 
   getProjectById = async (req: Request, res: Response) => {
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const project = await this.projectService.getProjectById(id);
     return res.status(200).json(project);
   };

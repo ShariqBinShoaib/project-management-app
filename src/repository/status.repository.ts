@@ -1,11 +1,22 @@
-import { EntityRepository } from "typeorm";
+import { Repository } from "typeorm";
 import { Status } from "../entity/Status";
 import { StatusDTO } from "../dto/status.dto";
 import { BadRequestError } from "../errors/BadRequestError";
-import { BaseRepository } from "./BaseRepository";
+import { FindOptions, FormattedResponse, Order } from "../types";
+import { dataSource } from "../startup/db";
+import { formatFindAndCountResponse } from "../utils/functions";
 
-@EntityRepository(Status)
-export class StatusRepository extends BaseRepository<Status> {
+export type StatusRepository = Repository<Status> & {
+  createStatus(status: StatusDTO): Promise<Status>;
+  getStatuses(
+    limit?: number,
+    offset?: number,
+    orderBy?: keyof Status,
+    order?: Order
+  ): Promise<FormattedResponse<Status>>;
+};
+
+export const statusRepository: StatusRepository = dataSource.getRepository(Status).extend({
   async createStatus(status: StatusDTO) {
     const newStatus = new Status(status);
 
@@ -21,5 +32,25 @@ export class StatusRepository extends BaseRepository<Status> {
         throw error;
       }
     }
-  }
-}
+  },
+
+  async getStatuses(limit?: number, offset?: number, orderBy?: keyof Status, order?: Order) {
+    const findOptions: FindOptions<Status> = {
+      skip: offset,
+      take: limit,
+      order: {
+        createdAt: "DESC",
+      },
+    };
+
+    if (order !== undefined && orderBy !== undefined) {
+      findOptions.order = {
+        [orderBy]: order,
+      };
+    }
+
+    const data = await this.findAndCount(findOptions);
+
+    return formatFindAndCountResponse<Status>(data);
+  },
+});

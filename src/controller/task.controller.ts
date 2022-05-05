@@ -16,7 +16,7 @@ export class TaskController {
   };
 
   deleteTask = async (req: Request, res: Response) => {
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const deletedTask = await this.taskService.deleteTask(id);
     return res.status(200).json(deletedTask);
   };
@@ -27,7 +27,7 @@ export class TaskController {
   };
 
   getTaskById = async (req: Request, res: Response) => {
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const task = await this.taskService.getTaskById(id);
     return res.status(200).json(task);
   };

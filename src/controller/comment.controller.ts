@@ -16,19 +16,20 @@ export class CommentController {
   };
 
   deleteComment = async (req: Request, res: Response) => {
-    const id: number = Number(req.params.id) ?? 0;
+    const id: number = Number(req.params.id);
     const deletedComment = await this.commentService.deleteComment(id);
     return res.status(200).json(deletedComment);
   };
 
-  getComments = async (_: Request, res: Response) => {
-    const comments = await this.commentService.getComments();
-    return res.status(200).json(comments);
-  };
-
   getCommentById = async (req: Request, res: Response) => {
-    const id: number = Number(req.params.id) ?? 0;
+    const id: number = Number(req.params.id);
     const comment = await this.commentService.getCommentById(id);
     return res.status(200).json(comment);
+  };
+
+  getCommentReplies = async (req: Request, res: Response) => {
+    const id: number = Number(req.params.id);
+    const replies = await this.commentService.getRepliesTree(id);
+    return res.status(200).json(replies);
   };
 }

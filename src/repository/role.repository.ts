@@ -1,11 +1,23 @@
-import { EntityRepository, In } from "typeorm";
+import { In, Repository } from "typeorm";
+import { dataSource } from "../startup/db";
 import { Role } from "../entity/Role";
 import { RoleDTO } from "../dto/role.dto";
 import { BadRequestError } from "../errors/BadRequestError";
-import { BaseRepository } from "./BaseRepository";
+import { FormattedResponse, FindOptions, Order } from "../types";
+import { formatFindAndCountResponse } from "../utils/functions";
 
-@EntityRepository(Role)
-export class RoleRepository extends BaseRepository<Role> {
+export type RoleRepository = Repository<Role> & {
+  createRole(role: RoleDTO): Promise<Role>;
+  getRoleIdsByNames(names: string[]): Promise<number[]>;
+  getRoles(
+    limit?: number,
+    offset?: number,
+    orderBy?: keyof Role,
+    order?: Order
+  ): Promise<FormattedResponse<Role>>;
+};
+
+export const roleRepository: RoleRepository = dataSource.getRepository(Role).extend({
   async createRole(role: RoleDTO) {
     const newRole = new Role(role);
 
@@ -21,10 +33,30 @@ export class RoleRepository extends BaseRepository<Role> {
         throw error;
       }
     }
-  }
+  },
 
   async getRoleIdsByNames(names: string[]) {
-    const roles = await this.find({ name: In(names) });
+    const roles = await this.findBy({ name: In(names) });
     return roles.map((role) => role.id);
-  }
-}
+  },
+
+  async getRoles(limit?: number, offset?: number, orderBy?: keyof Role, order?: Order) {
+    const findOptions: FindOptions<Role> = {
+      skip: offset,
+      take: limit,
+      order: {
+        createdAt: "DESC",
+      },
+    };
+
+    if (order !== undefined && orderBy !== undefined) {
+      findOptions.order = {
+        [orderBy]: order,
+      };
+    }
+
+    const data = await this.findAndCount(findOptions);
+
+    return formatFindAndCountResponse<Role>(data);
+  },
+});

@@ -27,7 +27,7 @@ export class RoleController {
   };
 
   getRoleById = async (req: Request, res: Response) => {
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const role = await this.roleService.getRoleById(id);
     return res.status(200).json(role);
   };

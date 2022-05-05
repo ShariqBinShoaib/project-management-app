@@ -1,10 +1,10 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
 import express from "express";
-// import { initializeDB } from "./startup/db";
 import { inititalizeRoutes } from "./startup/routes";
+import { dataSource } from "./startup/db";
 
-createConnection()
+dataSource
+  .initialize()
   .then(() => {
     const app = express();
     console.log("Connected to database...");

@@ -23,9 +23,7 @@ export class CommentService {
     }
 
     console.log(commentPayload);
-    const newComment = await this.commentRepository.createComment(
-      commentPayload
-    );
+    const newComment = await this.commentRepository.createComment(commentPayload);
 
     return newComment;
   }
@@ -34,16 +32,15 @@ export class CommentService {
     return this.commentRepository.delete(id);
   }
 
-  getComments() {
-    return this.getCommentsTree();
-  }
-
   getCommentById(id: number) {
-    return this.commentRepository.findOne(id);
+    return this.commentRepository.findOneBy({ id });
   }
 
   getCommentsTree() {
-    return this.commentRepository.findTrees({ relations: ["author"] });
+    return this.commentRepository.findTrees({
+      relations: ["author"],
+      depth: 1,
+    });
   }
 
   // getTaskRootComments(taskId: number) {

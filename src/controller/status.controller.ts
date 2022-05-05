@@ -16,7 +16,7 @@ export class StatusController {
   };
 
   deleteStatus = async (req: Request, res: Response) => {
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const deletedStatus = await this.statusService.deleteStatus(id);
     return res.status(200).json(deletedStatus);
   };
@@ -27,7 +27,7 @@ export class StatusController {
   };
 
   getStatusById = async (req: Request, res: Response) => {
-    const id: string = req.params.id;
+    const id: number = Number(req.params.id);
     const status = await this.statusService.getStatusById(id);
     return res.status(200).json(status);
   };

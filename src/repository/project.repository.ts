@@ -1,13 +1,25 @@
-import { EntityRepository } from "typeorm";
+import { Repository } from "typeorm";
 import { Project } from "../entity/Project";
 import { ProjectDTO } from "../dto/project.dto";
 import { BadRequestError } from "../errors/BadRequestError";
-import { BaseRepository } from "./BaseRepository";
 import { User } from "../entity/User";
 import { NotFoundError } from "../errors/NotFoundError";
+import { FindOptions, FormattedResponse, Order } from "../types";
+import { dataSource } from "../startup/db";
+import { formatFindAndCountResponse } from "../utils/functions";
 
-@EntityRepository(Project)
-export class ProjectRepository extends BaseRepository<Project> {
+export type ProjectRepository = Repository<Project> & {
+  createProject(role: ProjectDTO): Promise<Project>;
+  addUsersToProject(projectId: number, users: User[]): Promise<Project>;
+  getProjects(
+    limit?: number,
+    offset?: number,
+    orderBy?: keyof Project,
+    order?: Order
+  ): Promise<FormattedResponse<Project>>;
+};
+
+export const projectRepository: ProjectRepository = dataSource.getRepository(Project).extend({
   async createProject(project: ProjectDTO) {
     const newProject = new Project(project);
 
@@ -23,10 +35,10 @@ export class ProjectRepository extends BaseRepository<Project> {
         throw error;
       }
     }
-  }
+  },
 
-  async addUsersToProject(projectId: string, users: User[]) {
-    const project = await this.findOne(projectId);
+  async addUsersToProject(projectId: number, users: User[]) {
+    const project = await this.findOneBy({ id: projectId });
     if (project) {
       project.users = users;
       await project.save();
@@ -36,5 +48,25 @@ export class ProjectRepository extends BaseRepository<Project> {
         detail: `Project with id "${projectId}" not found`,
       });
     }
-  }
-}
+  },
+
+  async getProjects(limit?: number, offset?: number, orderBy?: keyof Project, order?: Order) {
+    const findOptions: FindOptions<Project> = {
+      skip: offset,
+      take: limit,
+      order: {
+        createdAt: "DESC",
+      },
+    };
+
+    if (order !== undefined && orderBy !== undefined) {
+      findOptions.order = {
+        [orderBy]: order,
+      };
+    }
+
+    const data = await this.findAndCount(findOptions);
+
+    return formatFindAndCountResponse<Project>(data);
+  },
+});
